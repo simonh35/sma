@@ -1,14 +1,10 @@
 import argparse
-import PyPDF2
+import os
 from langchain_community.document_loaders import PyPDFLoader, PyPDFDirectoryLoader
 from populate_database import clear_database, add_to_chroma
 from pdf_from_zotero import fetch_all_items, download_content, check_zotero_connection
 from splitter import split_documents
-
-import os
-
-# Path to the directory containing the PDF files.
-DATA_PATH = "/home/t35/kms/data/"
+from dotenv import load_dotenv, find_dotenv
 
 # Dictionary to store the metadata of the documents.
 zotero_metadata = {}
@@ -38,11 +34,12 @@ if args.reset:
 
 # Load Docs from DATA_PATH into data 
 data = {}
+data_path = os.getenv("DATA_PATH")
 
-# Load the PDF files into the data dictionary.
-for filename in os.listdir(DATA_PATH):
+# Load all PDFs from DATA_PATH and Split them into chunks
+for filename in os.listdir(data_path):
     if(filename.endswith(".pdf")):
-        loader = PyPDFLoader(f"{DATA_PATH+filename}")
+        loader = PyPDFLoader(f"{data_path+filename}")
         doc = loader.load()
         chunks = split_documents(doc)
         # data[filename] = doc

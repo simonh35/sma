@@ -4,16 +4,13 @@ from langchain.schema.document import Document
 from langchain_chroma import Chroma
 from embedding_function import get_embedding
 
-CHROMA_PATH = "/home/t35/kms/chroma"
-
-
 
 def add_to_chroma(chunks: list[Document]):
     # Create the Chroma database.
     db = Chroma(
         collection_name="kms",
         embedding_function=get_embedding(),
-        persist_directory=CHROMA_PATH,
+        persist_directory=os.getenv("CHROMA_PATH"),
     )
 
     # Calculate Page IDs.
@@ -69,5 +66,5 @@ def calculate_chunk_ids(chunks):
 
 
 def clear_database():
-    if os.path.exists(CHROMA_PATH):
-        shutil.rmtree(CHROMA_PATH)
+    if os.path.exists(os.getenv("CHROMA_PATH")):
+        shutil.rmtree(os.getenv("CHROMA_PATH"))

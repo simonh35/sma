@@ -1,20 +1,21 @@
 import requests
 import os
+from dotenv import load_dotenv, dotenv_values
+load_dotenv()
 
-API_KEY= "Llf48f3eWeoZz18lsACeHb5K"
-LIBRARY_ID = "16178790"
-BASE_URL = f"https://api.zotero.org/users/{LIBRARY_ID}/items"
+
+BASE_URL = f"https://api.zotero.org/users/{os.getenv("ZOTERO_LIBRARY_ID")}/items"
 
 
 # Header for requests
 HEADERS = {
-    "Zotero-API-Key": API_KEY,
+    "Zotero-API-Key": os.getenv("ZOTERO_API_KEY"),
     "Content-Type": "application/json"
 }
-response = requests.get(BASE_URL, headers=HEADERS)
 
 # Check API connection with Zotero
 def check_zotero_connection():
+    response = requests.get(BASE_URL, headers=HEADERS)
     if response.status_code == 200:
         print(f"Zotero Status Code: {response.status_code}")
     else:
