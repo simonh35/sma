@@ -172,3 +172,5 @@ cython_debug/
 
 # Custom
 .DS_Store
+core-plugins.json
+workspace.json
