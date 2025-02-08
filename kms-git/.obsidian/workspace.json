@@ -13,13 +13,22 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "docs/courses/2024_sma-o/03_Prüfungsleistung.md",
                 "mode": "preview",
+                "source": true,
                 "backlinks": true,
-                "source": true
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "03_Prüfungsleistung"
             }
           }
         ]
@@ -41,7 +50,8 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
+                "sortOrder": "alphabetical",
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -194,6 +204,7 @@
   },
   "active": "23fdd685024d2570",
   "lastOpenFiles": [
+    "README.md",
     "lookup/lookup.md",
     "docs/courses/2024_sma-o/01_woche-1.md",
     "docs/courses/2024_sma-o/00_get-started.md",
@@ -219,7 +230,6 @@
     "lookup/prompts/create_type_tutorial_get-started.md",
     "lookup/prompts/create_type_projektziel_okt.md",
     "lookup/prompts/create_type_product-sheet.md",
-    "lookup/prompts/create_type_process.md",
     "docs/knowledge/prompt_engineering",
     "workspace/temp/Raspberry Pi 5",
     "lookup/contexts/1-inputs/_principles",

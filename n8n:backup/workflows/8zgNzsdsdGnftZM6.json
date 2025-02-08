@@ -1,0 +1,458 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -180
+      ],
+      "id": "139d81ce-e3ed-46d7-aff5-f325c94b3a47",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aaa41367-a94d-417d-9e0b-784121f32ee0",
+              "name": "userid",
+              "value": "16178790",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        -180
+      ],
+      "id": "b25544b6-ffcf-45cd-9e7b-b3a25f89f84b",
+      "name": "Set Zotero-UserID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bbd432d3-5beb-4697-a9b8-6ad59782ad26",
+              "name": "pdfKey",
+              "value": "={{ $json.key }}",
+              "type": "string"
+            },
+            {
+              "id": "430a02c2-5e87-45da-8e53-5744c53bd26e",
+              "name": "metadata",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        -180
+      ],
+      "id": "0f6f2461-1e5f-4012-88f6-f753e091b3f9",
+      "name": "Get 'Key'",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "=https://api.zotero.org/users/{{ $json.userid }}/items?format=json&itemType=attachment",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        -180
+      ],
+      "id": "64641565-c120-458f-889b-668b20a72317",
+      "name": "Load Items in Zotero",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WTHYtvNppGeVfzc0",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        -180
+      ],
+      "id": "4985e9d2-fb7d-437d-aefe-5dc1956c2899",
+      "name": "Extract Text from File"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.zotero.org/users/{{ $('Set Zotero-UserID').item.json.userid }}/items/{{ $json.pdfKey }}/file",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        -180
+      ],
+      "id": "f527da07-55f9-4ccd-a204-b7126295e584",
+      "name": "Get Items from Zotero",
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WTHYtvNppGeVfzc0",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1980,
+        -180
+      ],
+      "id": "8f12a4b0-8510-47fe-84db-3d8fcb593d62",
+      "name": "AI Agent",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        20
+      ],
+      "id": "8f4b191e-9b2e-4e66-8627-32e30210249e",
+      "name": "Ollama Chat Model"
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        0
+      ],
+      "id": "9d7671a0-8016-403d-aa94-aee0867f470e",
+      "name": "Embeddings Ollama"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "={{ $json.sessionId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        -180
+      ],
+      "id": "a86b25ad-2301-4b4d-8d48-5b53e20e7890",
+      "name": "Qdrant Vector Store"
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        0
+      ],
+      "id": "c1104fb4-4847-4d3d-b55e-361dfafe2868",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        180
+      ],
+      "id": "535889c9-a783-4b13-9e6e-4adf8f365bad",
+      "name": "Token Splitter"
+    },
+    {
+      "parameters": {
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "={{ $('When chat message received').item.json.sessionId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1,
+      "position": [
+        2040,
+        240
+      ],
+      "id": "a0a34a0a-b8b4-4d54-9d54-96e60b165b7c",
+      "name": "Qdrant Vector Store1"
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:latest",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        220
+      ],
+      "id": "d70a20b0-d64c-45ef-8049-15bab9be1660",
+      "name": "Ollama Chat Model1"
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        2040,
+        400
+      ],
+      "id": "6bb3997e-837d-451c-80c4-fc0bda3f186f",
+      "name": "Embeddings Ollama1"
+    },
+    {
+      "parameters": {
+        "name": "file_input",
+        "description": "The knowledge base to answer question"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        40
+      ],
+      "id": "d79288c8-e1ca-4e86-a908-7e3652b78b21",
+      "name": "Vector store tool"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Zotero-UserID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Zotero-UserID": {
+      "main": [
+        [
+          {
+            "node": "Load Items in Zotero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get 'Key'": {
+      "main": [
+        [
+          {
+            "node": "Get Items from Zotero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Items in Zotero": {
+      "main": [
+        [
+          {
+            "node": "Get 'Key'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text from File": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Items from Zotero": {
+      "main": [
+        [
+          {
+            "node": "Extract Text from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector store tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector store tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector store tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "76b0174aeb42fd1ce4deb69dd074374552daae6a1e5652a086d8ee1c1904f560"
+  }
+}
