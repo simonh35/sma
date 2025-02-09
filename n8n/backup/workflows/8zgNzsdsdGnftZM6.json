@@ -3,17 +3,6 @@
   "active": false,
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        240,
-        -180
-      ],
-      "id": "139d81ce-e3ed-46d7-aff5-f325c94b3a47",
-      "name": "When clicking ‘Test workflow’"
-    },
-    {
       "parameters": {
         "assignments": {
           "assignments": [
@@ -71,11 +60,7 @@
         "url": "=https://api.zotero.org/users/{{ $json.userid }}/items?format=json&itemType=attachment",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
-        "options": {
-          "response": {
-            "response": {}
-          }
-        }
+        "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -87,7 +72,7 @@
       "name": "Load Items in Zotero",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "WTHYtvNppGeVfzc0",
+          "id": "ufjIeqz4xZ7Qa1LE",
           "name": "Header Auth account"
         }
       }
@@ -127,7 +112,7 @@
       "retryOnFail": true,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "WTHYtvNppGeVfzc0",
+          "id": "ufjIeqz4xZ7Qa1LE",
           "name": "Header Auth account"
         }
       }
@@ -161,11 +146,17 @@
         20
       ],
       "id": "8f4b191e-9b2e-4e66-8627-32e30210249e",
-      "name": "Ollama Chat Model"
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xHuYe0MDGOs9IpBW",
+          "name": "Local Ollama service"
+        }
+      }
     },
     {
       "parameters": {
-        "model": "llama3.2:latest"
+        "model": "nomic-embed-text:latest"
       },
       "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
       "typeVersion": 1,
@@ -174,7 +165,13 @@
         0
       ],
       "id": "9d7671a0-8016-403d-aa94-aee0867f470e",
-      "name": "Embeddings Ollama"
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xHuYe0MDGOs9IpBW",
+          "name": "Local Ollama service"
+        }
+      }
     },
     {
       "parameters": {
@@ -193,11 +190,16 @@
         -180
       ],
       "id": "a86b25ad-2301-4b4d-8d48-5b53e20e7890",
-      "name": "Qdrant Vector Store"
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "sFfERYppMeBnFNeA",
+          "name": "Local QdrantApi database"
+        }
+      }
     },
     {
       "parameters": {
-        "dataType": "binary",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
@@ -211,8 +213,7 @@
     },
     {
       "parameters": {
-        "chunkSize": 500,
-        "chunkOverlap": 50
+        "chunkOverlap": 200
       },
       "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
       "typeVersion": 1,
@@ -239,7 +240,13 @@
         240
       ],
       "id": "a0a34a0a-b8b4-4d54-9d54-96e60b165b7c",
-      "name": "Qdrant Vector Store1"
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "sFfERYppMeBnFNeA",
+          "name": "Local QdrantApi database"
+        }
+      }
     },
     {
       "parameters": {
@@ -255,7 +262,13 @@
         220
       ],
       "id": "d70a20b0-d64c-45ef-8049-15bab9be1660",
-      "name": "Ollama Chat Model1"
+      "name": "Ollama Chat Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xHuYe0MDGOs9IpBW",
+          "name": "Local Ollama service"
+        }
+      }
     },
     {
       "parameters": {
@@ -268,7 +281,13 @@
         400
       ],
       "id": "6bb3997e-837d-451c-80c4-fc0bda3f186f",
-      "name": "Embeddings Ollama1"
+      "name": "Embeddings Ollama1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xHuYe0MDGOs9IpBW",
+          "name": "Local Ollama service"
+        }
+      }
     },
     {
       "parameters": {
@@ -283,20 +302,23 @@
       ],
       "id": "d79288c8-e1ca-4e86-a908-7e3652b78b21",
       "name": "Vector store tool"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        -180
+      ],
+      "id": "b3bb4da6-4ba2-43d3-93a4-ca4894d2aafa",
+      "name": "When chat message received",
+      "webhookId": "8a48749e-064c-42c1-bacf-9d1415d5e9d7"
     }
   ],
   "connections": {
-    "When clicking ‘Test workflow’": {
-      "main": [
-        [
-          {
-            "node": "Set Zotero-UserID",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Set Zotero-UserID": {
       "main": [
         [
@@ -450,11 +472,22 @@
           }
         ]
       ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Set Zotero-UserID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "76b0174aeb42fd1ce4deb69dd074374552daae6a1e5652a086d8ee1c1904f560"
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
   }
 }
