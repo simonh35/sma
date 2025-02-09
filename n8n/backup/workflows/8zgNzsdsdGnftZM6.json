@@ -1,4 +1,6 @@
 {
+  "name": "AI Agent",
+  "active": false,
   "nodes": [
     {
       "parameters": {},
