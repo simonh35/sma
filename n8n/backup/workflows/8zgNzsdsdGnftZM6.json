@@ -72,7 +72,7 @@
       "name": "Load Items in Zotero",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "ufjIeqz4xZ7Qa1LE",
+          "id": "VS05UkCk2v7KvUAC",
           "name": "Header Auth account"
         }
       }
@@ -112,7 +112,7 @@
       "retryOnFail": true,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "ufjIeqz4xZ7Qa1LE",
+          "id": "VS05UkCk2v7KvUAC",
           "name": "Header Auth account"
         }
       }
@@ -127,7 +127,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        1980,
+        2240,
         -180
       ],
       "id": "8f12a4b0-8510-47fe-84db-3d8fcb593d62",
@@ -142,8 +142,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        1980,
-        20
+        2180,
+        120
       ],
       "id": "8f4b191e-9b2e-4e66-8627-32e30210249e",
       "name": "Ollama Chat Model",
@@ -161,7 +161,7 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
       "typeVersion": 1,
       "position": [
-        1540,
+        1760,
         0
       ],
       "id": "9d7671a0-8016-403d-aa94-aee0867f470e",
@@ -186,7 +186,7 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
       "typeVersion": 1,
       "position": [
-        1580,
+        1800,
         -180
       ],
       "id": "a86b25ad-2301-4b4d-8d48-5b53e20e7890",
@@ -205,24 +205,11 @@
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "typeVersion": 1,
       "position": [
-        1680,
+        1900,
         0
       ],
       "id": "c1104fb4-4847-4d3d-b55e-361dfafe2868",
       "name": "Default Data Loader"
-    },
-    {
-      "parameters": {
-        "chunkOverlap": 200
-      },
-      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
-      "typeVersion": 1,
-      "position": [
-        1680,
-        180
-      ],
-      "id": "535889c9-a783-4b13-9e6e-4adf8f365bad",
-      "name": "Token Splitter"
     },
     {
       "parameters": {
@@ -236,7 +223,7 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
       "typeVersion": 1,
       "position": [
-        2040,
+        2260,
         240
       ],
       "id": "a0a34a0a-b8b4-4d54-9d54-96e60b165b7c",
@@ -258,7 +245,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        2380,
+        2600,
         220
       ],
       "id": "d70a20b0-d64c-45ef-8049-15bab9be1660",
@@ -277,7 +264,7 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
       "typeVersion": 1,
       "position": [
-        2040,
+        2260,
         400
       ],
       "id": "6bb3997e-837d-451c-80c4-fc0bda3f186f",
@@ -297,7 +284,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
       "typeVersion": 1,
       "position": [
-        2120,
+        2340,
         40
       ],
       "id": "d79288c8-e1ca-4e86-a908-7e3652b78b21",
@@ -316,6 +303,49 @@
       "id": "b3bb4da6-4ba2-43d3-93a4-ca4894d2aafa",
       "name": "When chat message received",
       "webhookId": "8a48749e-064c-42c1-bacf-9d1415d5e9d7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23ff3aab-244d-4927-9eb9-85bfb1b10c75",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "3cc1b222-9c20-481a-97a0-ee03234f7e2b",
+              "name": "metadata",
+              "value": "={{ $json.info }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1580,
+        -180
+      ],
+      "id": "be2b1497-b18d-411e-ab3b-2950171c29c5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        180
+      ],
+      "id": "75d092e0-330c-41bc-9a28-49fe86a76548",
+      "name": "Recursive Character Text Splitter"
     }
   ],
   "connections": {
@@ -356,7 +386,7 @@
       "main": [
         [
           {
-            "node": "Qdrant Vector Store",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -418,17 +448,6 @@
         ]
       ]
     },
-    "Token Splitter": {
-      "ai_textSplitter": [
-        [
-          {
-            "node": "Default Data Loader",
-            "type": "ai_textSplitter",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Qdrant Vector Store1": {
       "ai_vectorStore": [
         [
@@ -479,6 +498,28 @@
           {
             "node": "Set Zotero-UserID",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
             "index": 0
           }
         ]
