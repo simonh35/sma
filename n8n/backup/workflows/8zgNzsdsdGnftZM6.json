@@ -72,7 +72,7 @@
       "name": "Load Items in Zotero",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "ufjIeqz4xZ7Qa1LE",
+          "id": "VS05UkCk2v7KvUAC",
           "name": "Header Auth account"
         }
       }
@@ -112,7 +112,7 @@
       "retryOnFail": true,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "ufjIeqz4xZ7Qa1LE",
+          "id": "VS05UkCk2v7KvUAC",
           "name": "Header Auth account"
         }
       }
@@ -120,7 +120,7 @@
     {
       "parameters": {
         "options": {
-          "systemMessage": "You are a helpful assistant designed to answer a students questions based on his documents.\n\nRetrieve relevant information from the provided internal documents and provide a concise, accurate, and informative answer to the question.\n\nAt all costs: use the tool called \"knowledge\" to retrieve any information from the documents that you should use to create an answer.\n\nMake sure to include the page on where you found the information in your answer.\n\nIf the answer cannot be found in the provided documents, respond with \"I cannot find the answer in the available resources.\""
+          "systemMessage": "Du bist ein hilfreicher Assistent, der die Fragen eines Studenten anhand seiner Dokumente beantworten soll.\n\nRufe relevante Informationen aus den bereitgestellten internen Dokumenten ab und gebe eine präzise, genaue und informative Antwort auf die Frage.\n\nVerwende das Tool \"knowledge\", um Informationen aus den Dokumenten abzurufen, mit denen du eine Antwort erstellen sollst.\n\nStelle sicher, dass du die Quelle, auf der du die Informationen gefunden haben, in deine Antwort aufnimmst.\n\nWenn du keine Relevanten Informationen in den zur Verfügung gestellten Dokumenten finden kannst, antworte mit \"Ich kann keine Antwort in den zur Verfügung gestellten Dokumenten finden.\"\nDu darfst dann, aber nur dann, eine Antwort aus anderen Quellen generieren, wenn du keine Antwort in den dir zur Verfügung gestellten Dokumente finden kannst, allerdings musst du in jedem Fall die Quelle angeben."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -131,7 +131,8 @@
       ],
       "id": "8f12a4b0-8510-47fe-84db-3d8fcb593d62",
       "name": "AI Agent",
-      "executeOnce": true
+      "executeOnce": true,
+      "alwaysOutputData": false
     },
     {
       "parameters": {
@@ -212,7 +213,7 @@
     },
     {
       "parameters": {
-        "model": "deepseek-r1:1.5b",
+        "model": "llama3.2:latest",
         "options": {
           "temperature": 0
         }
