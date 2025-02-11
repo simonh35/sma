@@ -175,3 +175,4 @@ cython_debug/
 core-plugins.json
 workspace.json
 zotero.txt
+creds.json
