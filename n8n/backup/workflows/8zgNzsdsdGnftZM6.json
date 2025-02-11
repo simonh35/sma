@@ -19,8 +19,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        460,
-        -180
+        240,
+        0
       ],
       "id": "b25544b6-ffcf-45cd-9e7b-b3a25f89f84b",
       "name": "Set Zotero-UserID"
@@ -48,8 +48,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        900,
-        -180
+        700,
+        0
       ],
       "id": "0f6f2461-1e5f-4012-88f6-f753e091b3f9",
       "name": "Get 'Key'",
@@ -65,14 +65,14 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        680,
-        -180
+        460,
+        0
       ],
       "id": "64641565-c120-458f-889b-668b20a72317",
       "name": "Load Items in Zotero",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "VS05UkCk2v7KvUAC",
+          "id": "ufjIeqz4xZ7Qa1LE",
           "name": "Header Auth account"
         }
       }
@@ -85,8 +85,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1360,
-        -180
+        1180,
+        0
       ],
       "id": "4985e9d2-fb7d-437d-aefe-5dc1956c2899",
       "name": "Extract Text from File"
@@ -103,8 +103,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1140,
-        -180
+        940,
+        0
       ],
       "id": "f527da07-55f9-4ccd-a204-b7126295e584",
       "name": "Get Items from Zotero",
@@ -112,23 +112,22 @@
       "retryOnFail": true,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "VS05UkCk2v7KvUAC",
+          "id": "ufjIeqz4xZ7Qa1LE",
           "name": "Header Auth account"
         }
       }
     },
     {
       "parameters": {
-        "agent": "conversationalAgent",
-        "promptType": "define",
-        "text": "={{ $('When chat message received').item.json.chatInput }}",
-        "options": {}
+        "options": {
+          "systemMessage": "You are a helpful assistant designed to answer a students questions based on his documents.\n\nRetrieve relevant information from the provided internal documents and provide a concise, accurate, and informative answer to the question.\n\nAt all costs: use the tool called \"knowledge\" to retrieve any information from the documents that you should use to create an answer.\n\nMake sure to include the page on where you found the information in your answer.\n\nIf the answer cannot be found in the provided documents, respond with \"I cannot find the answer in the available resources.\""
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        2240,
-        -180
+        280,
+        -740
       ],
       "id": "8f12a4b0-8510-47fe-84db-3d8fcb593d62",
       "name": "AI Agent",
@@ -142,8 +141,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        2180,
-        120
+        180,
+        -520
       ],
       "id": "8f4b191e-9b2e-4e66-8627-32e30210249e",
       "name": "Ollama Chat Model",
@@ -161,8 +160,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
       "typeVersion": 1,
       "position": [
-        1760,
-        0
+        1540,
+        220
       ],
       "id": "9d7671a0-8016-403d-aa94-aee0867f470e",
       "name": "Embeddings Ollama",
@@ -178,7 +177,7 @@
         "mode": "insert",
         "qdrantCollection": {
           "__rl": true,
-          "value": "={{ $json.sessionId }}",
+          "value": "={{ $('Set Zotero-UserID').item.json.userid }}",
           "mode": "id"
         },
         "options": {}
@@ -186,8 +185,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
       "typeVersion": 1,
       "position": [
-        1800,
-        -180
+        1660,
+        0
       ],
       "id": "a86b25ad-2301-4b4d-8d48-5b53e20e7890",
       "name": "Qdrant Vector Store",
@@ -205,39 +204,15 @@
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "typeVersion": 1,
       "position": [
-        1900,
-        0
+        1700,
+        220
       ],
       "id": "c1104fb4-4847-4d3d-b55e-361dfafe2868",
       "name": "Default Data Loader"
     },
     {
       "parameters": {
-        "qdrantCollection": {
-          "__rl": true,
-          "value": "={{ $('When chat message received').item.json.sessionId }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
-      "typeVersion": 1,
-      "position": [
-        2260,
-        240
-      ],
-      "id": "a0a34a0a-b8b4-4d54-9d54-96e60b165b7c",
-      "name": "Qdrant Vector Store1",
-      "credentials": {
-        "qdrantApi": {
-          "id": "sFfERYppMeBnFNeA",
-          "name": "Local QdrantApi database"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": "llama3.2:latest",
+        "model": "deepseek-r1:1.5b",
         "options": {
           "temperature": 0
         }
@@ -245,8 +220,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        2600,
-        220
+        720,
+        -320
       ],
       "id": "d70a20b0-d64c-45ef-8049-15bab9be1660",
       "name": "Ollama Chat Model1",
@@ -259,13 +234,13 @@
     },
     {
       "parameters": {
-        "model": "llama3.2:latest"
+        "model": "nomic-embed-text:latest"
       },
       "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
       "typeVersion": 1,
       "position": [
-        2260,
-        400
+        260,
+        -220
       ],
       "id": "6bb3997e-837d-451c-80c4-fc0bda3f186f",
       "name": "Embeddings Ollama1",
@@ -278,47 +253,42 @@
     },
     {
       "parameters": {
-        "name": "file_input",
-        "description": "The knowledge base to answer question"
+        "name": "knowledge",
+        "description": "Retrieve information from any documents."
       },
       "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
       "typeVersion": 1,
       "position": [
-        2340,
-        40
+        540,
+        -540
       ],
       "id": "d79288c8-e1ca-4e86-a908-7e3652b78b21",
       "name": "Vector store tool"
     },
     {
       "parameters": {
+        "chunkSize": 1024,
+        "chunkOverlap": 256,
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
-      "typeVersion": 1.1,
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
       "position": [
-        260,
-        -180
+        1660,
+        400
       ],
-      "id": "b3bb4da6-4ba2-43d3-93a4-ca4894d2aafa",
-      "name": "When chat message received",
-      "webhookId": "8a48749e-064c-42c1-bacf-9d1415d5e9d7"
+      "id": "430c4fdc-2eee-4899-89c8-1944697e0afb",
+      "name": "Recursive Character Text Splitter"
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "23ff3aab-244d-4927-9eb9-85bfb1b10c75",
+              "id": "f6bb76a0-190f-4f0b-82d9-311eb0bdce77",
               "name": "text",
               "value": "={{ $json.text }}",
               "type": "string"
-            },
-            {
-              "id": "3cc1b222-9c20-481a-97a0-ee03234f7e2b",
-              "name": "metadata",
-              "value": "={{ $json.info }}",
-              "type": "object"
             }
           ]
         },
@@ -327,25 +297,61 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1580,
-        -180
+        1420,
+        0
       ],
-      "id": "be2b1497-b18d-411e-ab3b-2950171c29c5",
+      "id": "fc76edb9-f824-4a2b-b406-8df26a424e20",
       "name": "Edit Fields"
     },
     {
       "parameters": {
-        "chunkOverlap": 200,
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -20,
+        -740
+      ],
+      "id": "c8b7db34-7455-4567-9034-f338dc8244a7",
+      "name": "When chat message received",
+      "webhookId": "904638c5-fa9c-4cdf-8ba4-006ab8ec4ab8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        1900,
-        180
+        0,
+        0
       ],
-      "id": "75d092e0-330c-41bc-9a28-49fe86a76548",
-      "name": "Recursive Character Text Splitter"
+      "id": "4299c713-4ae3-466a-8869-38b2c1624c75",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "16178790",
+          "mode": "list",
+          "cachedResultName": "16178790"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1,
+      "position": [
+        340,
+        -360
+      ],
+      "id": "89df16ca-c6d5-4806-9bcf-47c925226118",
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "sFfERYppMeBnFNeA",
+          "name": "Local QdrantApi database"
+        }
+      }
     }
   ],
   "connections": {
@@ -428,13 +434,7 @@
     },
     "Qdrant Vector Store": {
       "main": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Default Data Loader": {
@@ -443,17 +443,6 @@
           {
             "node": "Qdrant Vector Store",
             "type": "ai_document",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Qdrant Vector Store1": {
-      "ai_vectorStore": [
-        [
-          {
-            "node": "Vector store tool",
-            "type": "ai_vectorStore",
             "index": 0
           }
         ]
@@ -492,12 +481,12 @@
         ]
       ]
     },
-    "When chat message received": {
-      "main": [
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
         [
           {
-            "node": "Set Zotero-UserID",
-            "type": "main",
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
             "index": 0
           }
         ]
@@ -514,12 +503,34 @@
         ]
       ]
     },
-    "Recursive Character Text Splitter": {
-      "ai_textSplitter": [
+    "When chat message received": {
+      "main": [
         [
           {
-            "node": "Default Data Loader",
-            "type": "ai_textSplitter",
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Zotero-UserID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector store tool",
+            "type": "ai_vectorStore",
             "index": 0
           }
         ]
