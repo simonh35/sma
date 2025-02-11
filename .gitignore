@@ -174,3 +174,4 @@ cython_debug/
 .DS_Store
 core-plugins.json
 workspace.json
+zotero.txt
