@@ -12,7 +12,7 @@
                         {
                             "id": "aaa41367-a94d-417d-9e0b-784121f32ee0",
                             "name": "userid",
-                            "value": "0",
+                            "value": "",
                             "type": "string"
                         }
                     ]
@@ -106,18 +106,12 @@
             "id": "f527da07-55f9-4ccd-a204-b7126295e584",
             "name": "Get Items from Zotero",
             "executeOnce": false,
-            "retryOnFail": true,
-            "credentials": {
-                "httpHeaderAuth": {
-                    "id": "VS05UkCk2v7KvUAC",
-                    "name": "Header Auth account"
-                }
-            }
+            "retryOnFail": true
         },
         {
             "parameters": {
                 "options": {
-                    "systemMessage": "Du bist ein hilfreicher Assistent, der die Fragen eines Studenten anhand der zur Verfügung gestellten Dokumenten beantwortet.\n\nEs ist von extremer Wichtigkeit, dass du \"Tool\" nutzt, um mit den bereitgestellten Daten deine Antwort zu formulieren.\n\nWenn du keine Relevanten Informationen in den zur Verfügung gestellt bekommst, antworte mit \"Ich kann keine Antwort in den zur Verfügung gestellten Dokumenten finden.\" Überlege dir keine eigenen Antworten!"
+                    "systemMessage": "Du bist ein hilfreicher Assistent, der die Fragen eines Studenten anhand der zur Verfügung gestellten Dokumenten beantwortet.\n\nEs ist von extremer Wichtigkeit, dass du \"Tool\" nutzt, um mit den bereitgestellten Daten deine Antwort zu formulieren.\n\nWenn du keine Relevanten Informationen zur Verfügung gestellt bekommst, antworte mit \"Ich kann keine Antwort in den zur Verfügung gestellten Dokumenten finden.\" Überlege dir keine eigenen Antworten!"
                 }
             },
             "type": "@n8n/n8n-nodes-langchain.agent",
@@ -148,8 +142,8 @@
             "name": "Ollama Chat Model",
             "credentials": {
                 "ollamaApi": {
-                    "id": "xHuYe0MDGOs9IpBW",
-                    "name": "Local Ollama service"
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
                 }
             }
         },
@@ -167,8 +161,8 @@
             "name": "Embeddings Ollama",
             "credentials": {
                 "ollamaApi": {
-                    "id": "xHuYe0MDGOs9IpBW",
-                    "name": "Local Ollama service"
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
                 }
             }
         },
@@ -192,8 +186,8 @@
             "name": "Qdrant Vector Store",
             "credentials": {
                 "qdrantApi": {
-                    "id": "sFfERYppMeBnFNeA",
-                    "name": "Local QdrantApi database"
+                    "id": "iYwMvHCq2EjfOI8e",
+                    "name": "Local Qdrant Database"
                 }
             }
         },
@@ -236,8 +230,8 @@
             "name": "Ollama Chat Model1",
             "credentials": {
                 "ollamaApi": {
-                    "id": "xHuYe0MDGOs9IpBW",
-                    "name": "Local Ollama service"
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
                 }
             }
         },
@@ -255,8 +249,8 @@
             "name": "Embeddings Ollama1",
             "credentials": {
                 "ollamaApi": {
-                    "id": "xHuYe0MDGOs9IpBW",
-                    "name": "Local Ollama service"
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
                 }
             }
         },
@@ -343,8 +337,8 @@
             "name": "Qdrant Vector Store1",
             "credentials": {
                 "qdrantApi": {
-                    "id": "sFfERYppMeBnFNeA",
-                    "name": "Local QdrantApi database"
+                    "id": "iYwMvHCq2EjfOI8e",
+                    "name": "Local Qdrant Database"
                 }
             }
         },
