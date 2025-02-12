@@ -11,18 +11,6 @@ cd sma
 ## Running n8n using docker compose
 
 ### For users running Ollama locally
-If you're running OLLAMA locally on your Mac (not in Docker), you need to modify the OLLAMA_HOST environment variable
-in the n8n service configuration. Update the x-n8n section in your Docker Compose file as follows:
-
-```yaml
-x-n8n: &service-n8n
-  # ... other configurations ...
-  environment:
-    # ... other environment variables ...
-    - OLLAMA_HOST=host.docker.internal:11434
-```
-
-Head back to your terminal:
 ```bash
 docker compose up
 ```
