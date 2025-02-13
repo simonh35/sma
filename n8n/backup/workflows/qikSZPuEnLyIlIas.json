@@ -1,8 +1,8 @@
 {
     "createdAt": "2025-02-11T10:07:55.864Z",
-    "updatedAt": "2025-02-11T14:41:27.473Z",
+    "updatedAt": "2025-02-12T18:27:47.613Z",
     "id": "qikSZPuEnLyIlIas",
-    "name": "AI Agent",
+    "name": "SMA",
     "active": false,
     "nodes": [
         {
@@ -60,7 +60,7 @@
         },
         {
             "parameters": {
-                "url": "=https://api.zotero.org/users/{{ $json.userid }}/items?format=json&itemType=attachment",
+                "url": "=https://api.zotero.org/users/{{ $json.userid }}/items",
                 "authentication": "genericCredentialType",
                 "genericAuthType": "httpHeaderAuth",
                 "options": {}
@@ -92,10 +92,7 @@
             "parameters": {
                 "url": "=https://api.zotero.org/users/{{ $('Set Zotero-UserID').item.json.userid }}/items/{{ $json.pdfKey }}/file",
                 "authentication": "genericCredentialType",
-                "genericAuthType": "httpHeaderAuth",
-                "options": {
-                    "timeout": 20000
-                }
+                "genericAuthType": "httpHeaderAuth"
             },
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.2,
@@ -106,44 +103,11 @@
             "id": "f527da07-55f9-4ccd-a204-b7126295e584",
             "name": "Get Items from Zotero",
             "executeOnce": false,
-            "retryOnFail": true
-        },
-        {
-            "parameters": {
-                "options": {
-                    "systemMessage": "Du bist ein hilfreicher Assistent, der die Fragen eines Studenten anhand der zur Verfügung gestellten Dokumenten beantwortet.\n\nEs ist von extremer Wichtigkeit, dass du \"Tool\" nutzt, um mit den bereitgestellten Daten deine Antwort zu formulieren.\n\nWenn du keine Relevanten Informationen zur Verfügung gestellt bekommst, antworte mit \"Ich kann keine Antwort in den zur Verfügung gestellten Dokumenten finden.\" Überlege dir keine eigenen Antworten!"
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.agent",
-            "typeVersion": 1.7,
-            "position": [
-                280,
-                -740
-            ],
-            "id": "8f12a4b0-8510-47fe-84db-3d8fcb593d62",
-            "name": "AI Agent",
-            "executeOnce": true,
-            "alwaysOutputData": false
-        },
-        {
-            "parameters": {
-                "model": "llama3.2:latest",
-                "options": {
-                    "format": "default"
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
-            "typeVersion": 1,
-            "position": [
-                120,
-                -520
-            ],
-            "id": "8f4b191e-9b2e-4e66-8627-32e30210249e",
-            "name": "Ollama Chat Model",
+            "retryOnFail": true,
             "credentials": {
-                "ollamaApi": {
-                    "id": "x8tzcom7hoqKz8SP",
-                    "name": "Local Ollama Account"
+                "httpHeaderAuth": {
+                    "id": "usObd71QbFM4M9Hm",
+                    "name": "Header Auth account"
                 }
             }
         },
@@ -215,47 +179,6 @@
         },
         {
             "parameters": {
-                "model": "llama3.2:latest",
-                "options": {
-                    "temperature": 0.2
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
-            "typeVersion": 1,
-            "position": [
-                620,
-                -320
-            ],
-            "id": "d70a20b0-d64c-45ef-8049-15bab9be1660",
-            "name": "Ollama Chat Model1",
-            "credentials": {
-                "ollamaApi": {
-                    "id": "x8tzcom7hoqKz8SP",
-                    "name": "Local Ollama Account"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "model": "nomic-embed-text:latest"
-            },
-            "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
-            "typeVersion": 1,
-            "position": [
-                160,
-                -180
-            ],
-            "id": "6bb3997e-837d-451c-80c4-fc0bda3f186f",
-            "name": "Embeddings Ollama1",
-            "credentials": {
-                "ollamaApi": {
-                    "id": "x8tzcom7hoqKz8SP",
-                    "name": "Local Ollama Account"
-                }
-            }
-        },
-        {
-            "parameters": {
                 "chunkSize": 1024,
                 "chunkOverlap": 256,
                 "options": {}
@@ -299,8 +222,8 @@
             "type": "@n8n/n8n-nodes-langchain.chatTrigger",
             "typeVersion": 1.1,
             "position": [
-                -20,
-                -740
+                0,
+                -460
             ],
             "id": "c8b7db34-7455-4567-9034-f338dc8244a7",
             "name": "When chat message received",
@@ -319,22 +242,25 @@
         },
         {
             "parameters": {
+                "mode": "load",
                 "qdrantCollection": {
                     "__rl": true,
-                    "value": "16178790",
-                    "mode": "list",
-                    "cachedResultName": "16178790"
+                    "value": "",
+                    "mode": "id"
                 },
+                "prompt": "={{ $json.chatInput }}",
+                "topK": 6,
                 "options": {}
             },
             "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
             "typeVersion": 1,
             "position": [
                 260,
-                -340
+                -460
             ],
-            "id": "89df16ca-c6d5-4806-9bcf-47c925226118",
-            "name": "Qdrant Vector Store1",
+            "id": "bc7fd74d-9dcf-4066-a247-bda1ce881fcc",
+            "name": "Qdrant Vector Store2",
+            "executeOnce": true,
             "credentials": {
                 "qdrantApi": {
                     "id": "iYwMvHCq2EjfOI8e",
@@ -344,18 +270,88 @@
         },
         {
             "parameters": {
-                "name": "knowledge",
-                "description": "Retrieve information from any documents.",
-                "topK": 6
+                "model": "nomic-embed-text:latest"
             },
-            "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+            "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
             "typeVersion": 1,
             "position": [
-                380,
-                -520
+                300,
+                -240
             ],
-            "id": "d79288c8-e1ca-4e86-a908-7e3652b78b21",
-            "name": "vector store tool"
+            "id": "8155efb1-adfb-4d87-96b6-155a9549f3f5",
+            "name": "Embeddings Ollama2",
+            "credentials": {
+                "ollamaApi": {
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $('When chat message received').item.json.chatInput }}",
+                "options": {
+                    "systemMessage": "=System\n- Du bist ein hilfreicher Assistent, der die Fragen eines Studenten anhand seiner eigenen Dokumente beantwortest\n- Die Dokumente, welche du nutzen sollst um deine Antwort zu erstellen, werden von der vorherigen Node übergeben. Darin ist jeweils ein Ausschnitt einer Datei enthalten, welche die größte übereinstimmung mit der Query des Users hat.\n- Die Übereinstimmung wird mit einem Score bewertet, je niedriger der Score, desto höher die Wahrscheinlichkeit, dass die gegebene Information wichtig ist\n- Ein niedriger Score ist aber nicht immer die beste Antwort\n- Nutze IMMER nur die Dokumente, auf keinen Fall eigenes Wissen oder andere Quellen!\n- Gebe auch mit an, welches Dokument du genutzt hast und welche Zeilen wichtig waren. Nutze hierfür die Metadaten wie \"titel\" und \"lines from: to:\"\n- Wenn du keine Relevanten Informationen zur Verfügung gestellt bekommst, antworte mit \"Ich kann keine Antwort in den zur Verfügung gestellten Dokumenten finden.\" \n\nDokumente:\n1.\n{{ $json.pageContent[0] }}\nScore: {{ $json.score[0] }}\nMetadaten:\ntitel: {{ $json.metadata[0].title }}\nlines:\n  from: {{ $json.metadata[0].loc.lines.from }}\n  to: {{ $json.metadata[0].loc.lines.to }}\n2.\n{{ $json.pageContent[1] }}\nScore: {{ $json.score[1] }}\nMetadaten:\ntitel: {{ $json.metadata[1].title }}\nlines:\n  from: {{ $json.metadata[1].loc.lines.from }}\n  to: {{ $json.metadata[1].loc.lines.to }}\n\n3.\n{{ $json.pageContent[2] }}\nScore: {{ $json.score[2] }}\nMetadaten:\ntitel: {{ $json.metadata[2].title }}\nlines:\n  from: {{ $json.metadata[2].loc.lines.from }}\n  to: {{ $json.metadata[2].loc.lines.to }}\n\n4.\n{{ $json.pageContent[3] }}\nScore: {{ $json.score[3] }}\nMetadaten:\ntitel: {{ $json.metadata[3].title }}\nlines:\n  from: {{ $json.metadata[3].loc.lines.from }}\n  to: {{ $json.metadata[3].loc.lines.to }}\n\nUser:\n{{ $('When chat message received').item.json.chatInput }}"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 1.7,
+            "position": [
+                900,
+                -460
+            ],
+            "id": "1e1cf1d4-8c01-4cb8-bf58-556484b21be4",
+            "name": "AI Agent1",
+            "executeOnce": true
+        },
+        {
+            "parameters": {
+                "model": "llama3.2:latest",
+                "options": {
+                    "temperature": 0
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+            "typeVersion": 1,
+            "position": [
+                900,
+                -240
+            ],
+            "id": "edc78cd3-8df6-43e8-a348-106cd38302a0",
+            "name": "Ollama Chat Model2",
+            "credentials": {
+                "ollamaApi": {
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "fieldsToAggregate": {
+                    "fieldToAggregate": [
+                        {
+                            "fieldToAggregate": "document.pageContent"
+                        },
+                        {
+                            "fieldToAggregate": "score"
+                        },
+                        {
+                            "fieldToAggregate": "document.metadata"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.aggregate",
+            "typeVersion": 1,
+            "position": [
+                660,
+                -460
+            ],
+            "id": "b3e46e9b-a5a9-4351-8ec4-5311f3ae208f",
+            "name": "Aggregate"
         }
     ],
     "connections": {
@@ -414,17 +410,6 @@
                 ]
             ]
         },
-        "Ollama Chat Model": {
-            "ai_languageModel": [
-                [
-                    {
-                        "node": "AI Agent",
-                        "type": "ai_languageModel",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
         "Embeddings Ollama": {
             "ai_embedding": [
                 [
@@ -447,28 +432,6 @@
                     {
                         "node": "Qdrant Vector Store",
                         "type": "ai_document",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Ollama Chat Model1": {
-            "ai_languageModel": [
-                [
-                    {
-                        "node": "vector store tool",
-                        "type": "ai_languageModel",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Embeddings Ollama1": {
-            "ai_embedding": [
-                [
-                    {
-                        "node": "Qdrant Vector Store1",
-                        "type": "ai_embedding",
                         "index": 0
                     }
                 ]
@@ -500,7 +463,7 @@
             "main": [
                 [
                     {
-                        "node": "AI Agent",
+                        "node": "Qdrant Vector Store2",
                         "type": "main",
                         "index": 0
                     }
@@ -518,23 +481,45 @@
                 ]
             ]
         },
-        "Qdrant Vector Store1": {
-            "ai_vectorStore": [
+        "Qdrant Vector Store2": {
+            "main": [
                 [
                     {
-                        "node": "vector store tool",
-                        "type": "ai_vectorStore",
+                        "node": "Aggregate",
+                        "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "vector store tool": {
-            "ai_tool": [
+        "Embeddings Ollama2": {
+            "ai_embedding": [
                 [
                     {
-                        "node": "AI Agent",
-                        "type": "ai_tool",
+                        "node": "Qdrant Vector Store2",
+                        "type": "ai_embedding",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Ollama Chat Model2": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregate": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "main",
                         "index": 0
                     }
                 ]
@@ -548,7 +533,7 @@
         "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
     },
     "pinData": {},
-    "versionId": "1aa09018-0323-40b1-bc06-b850dfb6bbf6",
+    "versionId": "2c0a1a28-b585-4a9d-ac63-a25f131723ab",
     "triggerCount": 0,
     "tags": []
 }
