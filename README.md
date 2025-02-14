@@ -21,16 +21,16 @@ Zurück zum Terminal:
 ```bash
 docker compose up -d
 ```
+Nachdem der Docker-Container gestartet ist:
+1. Credentials unter <http://localhost:5678/credentials> öffnen
+2. Auf "Local Ollama service" klicken
+3. Base URL auf "http://host.docker.internal:11434" ändern
+4. Auf "Save" klicken
 
 ### Nvidia GPU Nutzer
 ```bash
 docker compose --profile gpu-nvidia up -d
 ```
-Nachdem der Docker-Container gestartet ist:
-1. Credentials unter <http://localhost:5678/credentials> öffnen
-2. Auf "Local Ollama service" klicken
-3. Base URL auf "http://ollama:11434" ändern
-4. Auf "Save" klicken
 
 > [!NOTE]
 > Bei erstmaliger Nutzung von Ollama über eine Nvidia GPU mit Docker:
