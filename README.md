@@ -27,7 +27,7 @@ Nachdem der Docker-Container gestartet ist:
 4. Auf "Save" klicken
 
 > [!NOTE]
-> Bei erstmaliger Nutzung von Ollama über eine Nvidia GPU mit Docker, 
+> Bei erstmaliger Nutzung von Ollama über eine Nvidia GPU mit Docker:
 > [Ollama Docker instructions](https://github.com/ollama/ollama/blob/main/docs/docker.md).
 
 
