@@ -44,18 +44,18 @@ docker compose --profile cpu up -d
 ## NUTZUNG
 Editor unter <http://localhost:5678/home/workflows> öffnen
 
-### 1. Zotero Connection
+### 1. Zotero
 - Zotero UserID in Node "Set Zotero-UserID" setzen
 - In der Node "Load Items in Zotero" unter "Header Auth" ein Credential mit dem Namen "Zotero-API-Key" und einem API Key von Zotero erstellen
 - Beim klicken von "Test Workflow" werden PDF-Dateien aus Zotero geladen und in der Qdrant Vektordatenbank gespeichert
 
-### 2. Obsidian Webhook
-- Dieser Workflow ist immer aktiv
+### 2. Obsidian
+- In der Node "Qdrant Vector Store" eine Collection auswählen oder erstellen
 - Beim drücken von "Strg + P" in Obsidian die Command Palette öffnen
 - "Post Webhook" eingeben und "Send note to n8n Workflow" auswählen
 - Dabei wird die Markdown-File in der Qdrant Vektordatenbank gespeichert
  
-### 3. SMA
+### 3. Chat
 - Dies ist der Main-Workflow
 - Bei der Eingabe einer Frage in das Chat-Fenster werden Dokumente aus der Qdrant Vektordatenbank verwendet, um mit einer LLM die Frage zu beantworten
 
