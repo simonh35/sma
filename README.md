@@ -48,15 +48,18 @@ Editor unter <http://localhost:5678/home/workflows> öffnen
 - Zotero UserID in Node "Set Zotero-UserID" setzen
 - In der Node "Load Items in Zotero" unter "Header Auth" ein Credential mit dem Namen "Zotero-API-Key" und einem API Key von Zotero erstellen
 - Beim klicken von "Test Workflow" werden PDF-Dateien aus Zotero geladen und in der Qdrant Vektordatenbank gespeichert
+- Die erstellten Vektoren können unter <http://localhost:6333/dashboard#/collections>
 
 ### 2. Obsidian
 - In der Node "Qdrant Vector Store" eine Collection auswählen oder erstellen
+- Workflow auf aktiv stellen
 - Beim drücken von "Strg + P" in Obsidian die Command Palette öffnen
 - "Post Webhook" eingeben und "Send note to n8n Workflow" auswählen
 - Dabei wird die Markdown-File in der Qdrant Vektordatenbank gespeichert
  
 ### 3. Chat
 - Dies ist der Main-Workflow
+- In der Node "Qdrant Vector Store" die gewünschte Collection auswählen
 - Bei der Eingabe einer Frage in das Chat-Fenster werden Dokumente aus der Qdrant Vektordatenbank verwendet, um mit einer LLM die Frage zu beantworten
 
 ## Typische Probleme
