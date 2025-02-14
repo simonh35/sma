@@ -1,0 +1,398 @@
+{
+    "createdAt": "2025-02-13T12:40:33.469Z",
+    "updatedAt": "2025-02-14T11:40:42.435Z",
+    "id": "YBU3J6cOdkuPEwJy",
+    "name": "Zotero",
+    "active": false,
+    "nodes": [
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "aaa41367-a94d-417d-9e0b-784121f32ee0",
+                            "name": "userid",
+                            "value": "",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -880,
+                80
+            ],
+            "id": "ed8eacfd-0778-421d-bbd3-ba12b2a43392",
+            "name": "Set Zotero-UserID"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "bbd432d3-5beb-4697-a9b8-6ad59782ad26",
+                            "name": "pdfKey",
+                            "value": "={{ $json.key }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "430a02c2-5e87-45da-8e53-5744c53bd26e",
+                            "name": "metadata",
+                            "value": "={{ $json.data }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -460,
+                80
+            ],
+            "id": "3ad8fb1e-769d-4544-a656-811257fea048",
+            "name": "Get 'Key'",
+            "executeOnce": false
+        },
+        {
+            "parameters": {
+                "url": "=https://api.zotero.org/users/{{ $json.userid }}/items",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                -660,
+                80
+            ],
+            "id": "b1b7ffd0-d06a-4268-af98-dad17f01a080",
+            "name": "Load Items in Zotero",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "Jv0RvKqlGS3LP0xc",
+                    "name": "Header Auth account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "pdf",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.extractFromFile",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ],
+            "id": "1a7b4666-6e3f-41a1-89ea-1f943d4b96ae",
+            "name": "Extract Text from File"
+        },
+        {
+            "parameters": {
+                "url": "=https://api.zotero.org/users/{{ $('Set Zotero-UserID').item.json.userid }}/items/{{ $json.pdfKey }}/file",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                0,
+                200
+            ],
+            "id": "8bb71882-19f6-4af3-8f0f-0f80a73611b0",
+            "name": "Get Items from Zotero",
+            "executeOnce": true,
+            "retryOnFail": false,
+            "alwaysOutputData": true,
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "Jv0RvKqlGS3LP0xc",
+                    "name": "Header Auth account"
+                },
+                "httpCustomAuth": {
+                    "id": "IVr4LDqUTSQtFrA2",
+                    "name": "Custom Auth account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "nomic-embed-text:latest"
+            },
+            "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+            "typeVersion": 1,
+            "position": [
+                440,
+                300
+            ],
+            "id": "8f50a31c-b515-41bc-b616-ee2f89bdd27c",
+            "name": "Embeddings Ollama",
+            "credentials": {
+                "ollamaApi": {
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "mode": "insert",
+                "qdrantCollection": {
+                    "__rl": true,
+                    "value": "={{ $('Set Zotero-UserID').item.json.userid }}",
+                    "mode": "id"
+                },
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+            "typeVersion": 1,
+            "position": [
+                560,
+                80
+            ],
+            "id": "972bd026-1e15-46b3-86b4-05c8812bfd00",
+            "name": "Qdrant Vector Store",
+            "credentials": {
+                "qdrantApi": {
+                    "id": "iYwMvHCq2EjfOI8e",
+                    "name": "Local Qdrant Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "options": {
+                    "metadata": {
+                        "metadataValues": [
+                            {
+                                "name": "title",
+                                "value": "={{ $('Extract Text from File').item.json.info.Title }}"
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+            "typeVersion": 1,
+            "position": [
+                600,
+                300
+            ],
+            "id": "ed45cdcc-5f5d-40e1-86f2-14dca7bbb0ba",
+            "name": "Default Data Loader"
+        },
+        {
+            "parameters": {
+                "chunkSize": 2048,
+                "chunkOverlap": 256,
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+            "typeVersion": 1,
+            "position": [
+                560,
+                480
+            ],
+            "id": "cf069b38-b52b-48e1-8e87-1eb00796c11d",
+            "name": "Recursive Character Text Splitter"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "f6bb76a0-190f-4f0b-82d9-311eb0bdce77",
+                            "name": "text",
+                            "value": "={{ $json.text }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                320,
+                80
+            ],
+            "id": "cbf72a2d-8785-4541-996d-178755896ddc",
+            "name": "Edit Fields"
+        },
+        {
+            "parameters": {
+                "options": {
+                    "reset": false
+                }
+            },
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                -240,
+                80
+            ],
+            "id": "663783c6-a383-4b43-b0c8-02735fc1850e",
+            "name": "Loop Over Items"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -1100,
+                80
+            ],
+            "id": "508e4780-b0ef-4656-a08e-a6f7f46a35ff",
+            "name": "When clicking 'Test Workflow'"
+        }
+    ],
+    "connections": {
+        "Set Zotero-UserID": {
+            "main": [
+                [
+                    {
+                        "node": "Load Items in Zotero",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get 'Key'": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Load Items in Zotero": {
+            "main": [
+                [
+                    {
+                        "node": "Get 'Key'",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract Text from File": {
+            "main": [
+                [
+                    {
+                        "node": "Edit Fields",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Items from Zotero": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Embeddings Ollama": {
+            "ai_embedding": [
+                [
+                    {
+                        "node": "Qdrant Vector Store",
+                        "type": "ai_embedding",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Default Data Loader": {
+            "ai_document": [
+                [
+                    {
+                        "node": "Qdrant Vector Store",
+                        "type": "ai_document",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Recursive Character Text Splitter": {
+            "ai_textSplitter": [
+                [
+                    {
+                        "node": "Default Data Loader",
+                        "type": "ai_textSplitter",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Edit Fields": {
+            "main": [
+                [
+                    {
+                        "node": "Qdrant Vector Store",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Loop Over Items": {
+            "main": [
+                [
+                    {
+                        "node": "Extract Text from File",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Get Items from Zotero",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "When clicking 'Test Workflow'": {
+            "main": [
+                [
+                    {
+                        "node": "Set Zotero-UserID",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+        "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "fbd00dd9-ff69-42ee-b858-40cef8122319",
+    "triggerCount": 0,
+    "tags": []
+}

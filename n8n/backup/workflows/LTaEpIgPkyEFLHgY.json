@@ -1,0 +1,188 @@
+{
+    "createdAt": "2025-02-13T12:32:22.917Z",
+    "updatedAt": "2025-02-14T11:38:38.982Z",
+    "id": "LTaEpIgPkyEFLHgY",
+    "name": "Obsidian",
+    "active": true,
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "0e7479f4-ab54-432b-ba43-ddc783208710",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                0
+            ],
+            "id": "ef920378-478e-46f4-81c1-30886aa15174",
+            "name": "Webhook",
+            "webhookId": "0e7479f4-ab54-432b-ba43-ddc783208710"
+        },
+        {
+            "parameters": {
+                "fieldToSplitOut": "body.content",
+                "include": "selectedOtherFields",
+                "fieldsToInclude": "body.filename",
+                "options": {}
+            },
+            "id": "47672656-0fd7-49f8-879c-8d76f62d4a4e",
+            "name": "Separate attachment data",
+            "type": "n8n-nodes-base.splitOut",
+            "typeVersion": 1,
+            "position": [
+                280,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "mode": "insert",
+                "qdrantCollection": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": ""
+                },
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+            "typeVersion": 1,
+            "position": [
+                600,
+                0
+            ],
+            "id": "6a685e25-936c-4352-b9ce-8f311701fc60",
+            "name": "Qdrant Vector Store",
+            "credentials": {
+                "qdrantApi": {
+                    "id": "iYwMvHCq2EjfOI8e",
+                    "name": "Local Qdrant Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "options": {
+                    "metadata": {
+                        "metadataValues": [
+                            {
+                                "name": "filename",
+                                "value": "={{ $('Separate attachment data').item.json['body.filename'] }}"
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+            "typeVersion": 1,
+            "position": [
+                660,
+                240
+            ],
+            "id": "856e36ff-b339-4194-a6c4-607dee788970",
+            "name": "Default Data Loader"
+        },
+        {
+            "parameters": {
+                "chunkSize": 1024,
+                "chunkOverlap": 128,
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+            "typeVersion": 1,
+            "position": [
+                620,
+                420
+            ],
+            "id": "e43f6ebb-f0be-4086-b0dd-82e6d955504c",
+            "name": "Recursive Character Text Splitter"
+        },
+        {
+            "parameters": {
+                "model": "nomic-embed-text:latest"
+            },
+            "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+            "typeVersion": 1,
+            "position": [
+                500,
+                240
+            ],
+            "id": "09108819-e58c-4791-a3a0-699b6feaf49b",
+            "name": "Embeddings Ollama",
+            "credentials": {
+                "ollamaApi": {
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Separate attachment data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Separate attachment data": {
+            "main": [
+                [
+                    {
+                        "node": "Qdrant Vector Store",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Default Data Loader": {
+            "ai_document": [
+                [
+                    {
+                        "node": "Qdrant Vector Store",
+                        "type": "ai_document",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Recursive Character Text Splitter": {
+            "ai_textSplitter": [
+                [
+                    {
+                        "node": "Default Data Loader",
+                        "type": "ai_textSplitter",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Embeddings Ollama": {
+            "ai_embedding": [
+                [
+                    {
+                        "node": "Qdrant Vector Store",
+                        "type": "ai_embedding",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "d5abe295-a390-4b13-a21b-d0c68edcf8e6",
+    "triggerCount": 1,
+    "tags": []
+}

@@ -1,220 +1,10 @@
 {
     "createdAt": "2025-02-11T10:07:55.864Z",
-    "updatedAt": "2025-02-12T18:27:47.613Z",
+    "updatedAt": "2025-02-14T11:38:25.272Z",
     "id": "qikSZPuEnLyIlIas",
-    "name": "SMA",
+    "name": "Chat",
     "active": false,
     "nodes": [
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "aaa41367-a94d-417d-9e0b-784121f32ee0",
-                            "name": "userid",
-                            "value": "",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                240,
-                0
-            ],
-            "id": "b25544b6-ffcf-45cd-9e7b-b3a25f89f84b",
-            "name": "Set Zotero-UserID"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "bbd432d3-5beb-4697-a9b8-6ad59782ad26",
-                            "name": "pdfKey",
-                            "value": "={{ $json.key }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "430a02c2-5e87-45da-8e53-5744c53bd26e",
-                            "name": "metadata",
-                            "value": "={{ $json.data }}",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                700,
-                0
-            ],
-            "id": "0f6f2461-1e5f-4012-88f6-f753e091b3f9",
-            "name": "Get 'Key'",
-            "executeOnce": false
-        },
-        {
-            "parameters": {
-                "url": "=https://api.zotero.org/users/{{ $json.userid }}/items",
-                "authentication": "genericCredentialType",
-                "genericAuthType": "httpHeaderAuth",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.2,
-            "position": [
-                460,
-                0
-            ],
-            "id": "64641565-c120-458f-889b-668b20a72317",
-            "name": "Load Items in Zotero"
-        },
-        {
-            "parameters": {
-                "operation": "pdf",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.extractFromFile",
-            "typeVersion": 1,
-            "position": [
-                1180,
-                0
-            ],
-            "id": "4985e9d2-fb7d-437d-aefe-5dc1956c2899",
-            "name": "Extract Text from File"
-        },
-        {
-            "parameters": {
-                "url": "=https://api.zotero.org/users/{{ $('Set Zotero-UserID').item.json.userid }}/items/{{ $json.pdfKey }}/file",
-                "authentication": "genericCredentialType",
-                "genericAuthType": "httpHeaderAuth"
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.2,
-            "position": [
-                940,
-                0
-            ],
-            "id": "f527da07-55f9-4ccd-a204-b7126295e584",
-            "name": "Get Items from Zotero",
-            "executeOnce": false,
-            "retryOnFail": true,
-            "credentials": {
-                "httpHeaderAuth": {
-                    "id": "usObd71QbFM4M9Hm",
-                    "name": "Header Auth account"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "model": "nomic-embed-text:latest"
-            },
-            "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
-            "typeVersion": 1,
-            "position": [
-                1540,
-                220
-            ],
-            "id": "9d7671a0-8016-403d-aa94-aee0867f470e",
-            "name": "Embeddings Ollama",
-            "credentials": {
-                "ollamaApi": {
-                    "id": "x8tzcom7hoqKz8SP",
-                    "name": "Local Ollama Account"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "mode": "insert",
-                "qdrantCollection": {
-                    "__rl": true,
-                    "value": "={{ $('Set Zotero-UserID').item.json.userid }}",
-                    "mode": "id"
-                },
-                "options": {}
-            },
-            "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
-            "typeVersion": 1,
-            "position": [
-                1660,
-                0
-            ],
-            "id": "a86b25ad-2301-4b4d-8d48-5b53e20e7890",
-            "name": "Qdrant Vector Store",
-            "credentials": {
-                "qdrantApi": {
-                    "id": "iYwMvHCq2EjfOI8e",
-                    "name": "Local Qdrant Database"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "options": {
-                    "metadata": {
-                        "metadataValues": [
-                            {
-                                "name": "title",
-                                "value": "={{ $('Extract Text from File').item.json.info.Title }}"
-                            }
-                        ]
-                    }
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
-            "typeVersion": 1,
-            "position": [
-                1700,
-                220
-            ],
-            "id": "c1104fb4-4847-4d3d-b55e-361dfafe2868",
-            "name": "Default Data Loader"
-        },
-        {
-            "parameters": {
-                "chunkSize": 1024,
-                "chunkOverlap": 256,
-                "options": {}
-            },
-            "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
-            "typeVersion": 1,
-            "position": [
-                1660,
-                400
-            ],
-            "id": "430c4fdc-2eee-4899-89c8-1944697e0afb",
-            "name": "Recursive Character Text Splitter"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "f6bb76a0-190f-4f0b-82d9-311eb0bdce77",
-                            "name": "text",
-                            "value": "={{ $json.text }}",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                1420,
-                0
-            ],
-            "id": "fc76edb9-f824-4a2b-b406-8df26a424e20",
-            "name": "Edit Fields"
-        },
         {
             "parameters": {
                 "options": {}
@@ -228,104 +18,6 @@
             "id": "c8b7db34-7455-4567-9034-f338dc8244a7",
             "name": "When chat message received",
             "webhookId": "904638c5-fa9c-4cdf-8ba4-006ab8ec4ab8"
-        },
-        {
-            "parameters": {},
-            "type": "n8n-nodes-base.manualTrigger",
-            "typeVersion": 1,
-            "position": [
-                0,
-                0
-            ],
-            "id": "4299c713-4ae3-466a-8869-38b2c1624c75",
-            "name": "When clicking ‘Test workflow’"
-        },
-        {
-            "parameters": {
-                "mode": "load",
-                "qdrantCollection": {
-                    "__rl": true,
-                    "value": "",
-                    "mode": "id"
-                },
-                "prompt": "={{ $json.chatInput }}",
-                "topK": 6,
-                "options": {}
-            },
-            "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
-            "typeVersion": 1,
-            "position": [
-                260,
-                -460
-            ],
-            "id": "bc7fd74d-9dcf-4066-a247-bda1ce881fcc",
-            "name": "Qdrant Vector Store2",
-            "executeOnce": true,
-            "credentials": {
-                "qdrantApi": {
-                    "id": "iYwMvHCq2EjfOI8e",
-                    "name": "Local Qdrant Database"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "model": "nomic-embed-text:latest"
-            },
-            "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
-            "typeVersion": 1,
-            "position": [
-                300,
-                -240
-            ],
-            "id": "8155efb1-adfb-4d87-96b6-155a9549f3f5",
-            "name": "Embeddings Ollama2",
-            "credentials": {
-                "ollamaApi": {
-                    "id": "x8tzcom7hoqKz8SP",
-                    "name": "Local Ollama Account"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "promptType": "define",
-                "text": "={{ $('When chat message received').item.json.chatInput }}",
-                "options": {
-                    "systemMessage": "=System\n- Du bist ein hilfreicher Assistent, der die Fragen eines Studenten anhand seiner eigenen Dokumente beantwortest\n- Die Dokumente, welche du nutzen sollst um deine Antwort zu erstellen, werden von der vorherigen Node übergeben. Darin ist jeweils ein Ausschnitt einer Datei enthalten, welche die größte übereinstimmung mit der Query des Users hat.\n- Die Übereinstimmung wird mit einem Score bewertet, je niedriger der Score, desto höher die Wahrscheinlichkeit, dass die gegebene Information wichtig ist\n- Ein niedriger Score ist aber nicht immer die beste Antwort\n- Nutze IMMER nur die Dokumente, auf keinen Fall eigenes Wissen oder andere Quellen!\n- Gebe auch mit an, welches Dokument du genutzt hast und welche Zeilen wichtig waren. Nutze hierfür die Metadaten wie \"titel\" und \"lines from: to:\"\n- Wenn du keine Relevanten Informationen zur Verfügung gestellt bekommst, antworte mit \"Ich kann keine Antwort in den zur Verfügung gestellten Dokumenten finden.\" \n\nDokumente:\n1.\n{{ $json.pageContent[0] }}\nScore: {{ $json.score[0] }}\nMetadaten:\ntitel: {{ $json.metadata[0].title }}\nlines:\n  from: {{ $json.metadata[0].loc.lines.from }}\n  to: {{ $json.metadata[0].loc.lines.to }}\n2.\n{{ $json.pageContent[1] }}\nScore: {{ $json.score[1] }}\nMetadaten:\ntitel: {{ $json.metadata[1].title }}\nlines:\n  from: {{ $json.metadata[1].loc.lines.from }}\n  to: {{ $json.metadata[1].loc.lines.to }}\n\n3.\n{{ $json.pageContent[2] }}\nScore: {{ $json.score[2] }}\nMetadaten:\ntitel: {{ $json.metadata[2].title }}\nlines:\n  from: {{ $json.metadata[2].loc.lines.from }}\n  to: {{ $json.metadata[2].loc.lines.to }}\n\n4.\n{{ $json.pageContent[3] }}\nScore: {{ $json.score[3] }}\nMetadaten:\ntitel: {{ $json.metadata[3].title }}\nlines:\n  from: {{ $json.metadata[3].loc.lines.from }}\n  to: {{ $json.metadata[3].loc.lines.to }}\n\nUser:\n{{ $('When chat message received').item.json.chatInput }}"
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.agent",
-            "typeVersion": 1.7,
-            "position": [
-                900,
-                -460
-            ],
-            "id": "1e1cf1d4-8c01-4cb8-bf58-556484b21be4",
-            "name": "AI Agent1",
-            "executeOnce": true
-        },
-        {
-            "parameters": {
-                "model": "llama3.2:latest",
-                "options": {
-                    "temperature": 0
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
-            "typeVersion": 1,
-            "position": [
-                900,
-                -240
-            ],
-            "id": "edc78cd3-8df6-43e8-a348-106cd38302a0",
-            "name": "Ollama Chat Model2",
-            "credentials": {
-                "ollamaApi": {
-                    "id": "x8tzcom7hoqKz8SP",
-                    "name": "Local Ollama Account"
-                }
-            }
         },
         {
             "parameters": {
@@ -352,59 +44,124 @@
             ],
             "id": "b3e46e9b-a5a9-4351-8ec4-5311f3ae208f",
             "name": "Aggregate"
+        },
+        {
+            "parameters": {
+                "model": "llama3.2:latest",
+                "options": {
+                    "temperature": 0
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+            "typeVersion": 1,
+            "position": [
+                900,
+                -240
+            ],
+            "id": "edc78cd3-8df6-43e8-a348-106cd38302a0",
+            "name": "Ollama Chat Model",
+            "credentials": {
+                "ollamaApi": {
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "nomic-embed-text:latest"
+            },
+            "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+            "typeVersion": 1,
+            "position": [
+                220,
+                -240
+            ],
+            "id": "8155efb1-adfb-4d87-96b6-155a9549f3f5",
+            "name": "Embeddings Ollama",
+            "credentials": {
+                "ollamaApi": {
+                    "id": "x8tzcom7hoqKz8SP",
+                    "name": "Local Ollama Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "mode": "load",
+                "qdrantCollection": {
+                    "__rl": true,
+                    "value": "",
+                    "mode": "id"
+                },
+                "prompt": "={{ $json.chatInput }}",
+                "topK": 5,
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+            "typeVersion": 1,
+            "position": [
+                260,
+                -460
+            ],
+            "id": "bc7fd74d-9dcf-4066-a247-bda1ce881fcc",
+            "name": "Qdrant Vector Store",
+            "executeOnce": true,
+            "credentials": {
+                "qdrantApi": {
+                    "id": "iYwMvHCq2EjfOI8e",
+                    "name": "Local Qdrant Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $('When chat message received').item.json.chatInput }}",
+                "options": {
+                    "systemMessage": "=System\n- Du bist ein hilfreicher Assistent, der die Fragen eines Studenten anhand seiner eigenen Dokumente beantwortest\n- Die Dokumente, welche du nutzen sollst um deine Antwort zu erstellen, werden von der vorherigen Node übergeben. Darin ist jeweils ein Ausschnitt einer Datei enthalten, welche die größte übereinstimmung mit der Query des Users hat.\n- Die Übereinstimmung wird mit einem Score bewertet, je niedriger der Score, desto höher die Wahrscheinlichkeit, dass die gegebene Information wichtig ist\n- Nutze IMMER nur die Dokumente, auf keinen Fall eigenes Wissen oder andere Quellen!\n- Gebe auch mit an, welches Dokument du genutzt hast und welche Zeilen wichtig waren. Nutze hierfür die Metadaten wie \"titel\" und \"lines from: to:\"\n- Erfinde NIEMALS eigene Antworten. Wenn die Dokumente keine relevanten Informationen enthalten, antworte einfach mit \"Ich kann keine Antwort in den zur Verfügung gestellten Dokumenten finden.\"\n\nDokumente:\n1.\n{{ $json.pageContent[0] }}\nScore: {{ $json.score[0] }}\nMetadaten:\ntitel: {{ $json.metadata[0].title }}\nlines:\n  from: {{ $json.metadata[0].loc.lines.from }}\n  to: {{ $json.metadata[0].loc.lines.to }}\n2.\n{{ $json.pageContent[1] }}\nScore: {{ $json.score[1] }}\nMetadaten:\ntitel: {{ $json.metadata[1].title }}\nlines:\n  from: {{ $json.metadata[1].loc.lines.from }}\n  to: {{ $json.metadata[1].loc.lines.to }}\n\n3.\n{{ $json.pageContent[2] }}\nScore: {{ $json.score[2] }}\nMetadaten:\ntitel: {{ $json.metadata[2].title }}\nlines:\n  from: {{ $json.metadata[2].loc.lines.from }}\n  to: {{ $json.metadata[2].loc.lines.to }}\n\n4.\n{{ $json.pageContent[3] }}\nScore: {{ $json.score[3] }}\nMetadaten:\ntitel: {{ $json.metadata[3].title }}\nlines:\n  from: {{ $json.metadata[3].loc.lines.from }}\n  to: {{ $json.metadata[3].loc.lines.to }}\n\nUser:\n{{ $('When chat message received').item.json.chatInput }}"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 1.7,
+            "position": [
+                900,
+                -460
+            ],
+            "id": "1e1cf1d4-8c01-4cb8-bf58-556484b21be4",
+            "name": "AI Agent",
+            "executeOnce": true
         }
     ],
     "connections": {
-        "Set Zotero-UserID": {
+        "When chat message received": {
             "main": [
                 [
                     {
-                        "node": "Load Items in Zotero",
+                        "node": "Qdrant Vector Store",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Get 'Key'": {
+        "Aggregate": {
             "main": [
                 [
                     {
-                        "node": "Get Items from Zotero",
+                        "node": "AI Agent",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Load Items in Zotero": {
-            "main": [
+        "Ollama Chat Model": {
+            "ai_languageModel": [
                 [
                     {
-                        "node": "Get 'Key'",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Extract Text from File": {
-            "main": [
-                [
-                    {
-                        "node": "Edit Fields",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Get Items from Zotero": {
-            "main": [
-                [
-                    {
-                        "node": "Extract Text from File",
-                        "type": "main",
+                        "node": "AI Agent",
+                        "type": "ai_languageModel",
                         "index": 0
                     }
                 ]
@@ -423,102 +180,9 @@
         },
         "Qdrant Vector Store": {
             "main": [
-                []
-            ]
-        },
-        "Default Data Loader": {
-            "ai_document": [
-                [
-                    {
-                        "node": "Qdrant Vector Store",
-                        "type": "ai_document",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Recursive Character Text Splitter": {
-            "ai_textSplitter": [
-                [
-                    {
-                        "node": "Default Data Loader",
-                        "type": "ai_textSplitter",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Edit Fields": {
-            "main": [
-                [
-                    {
-                        "node": "Qdrant Vector Store",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "When chat message received": {
-            "main": [
-                [
-                    {
-                        "node": "Qdrant Vector Store2",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "When clicking ‘Test workflow’": {
-            "main": [
-                [
-                    {
-                        "node": "Set Zotero-UserID",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Qdrant Vector Store2": {
-            "main": [
                 [
                     {
                         "node": "Aggregate",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Embeddings Ollama2": {
-            "ai_embedding": [
-                [
-                    {
-                        "node": "Qdrant Vector Store2",
-                        "type": "ai_embedding",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Ollama Chat Model2": {
-            "ai_languageModel": [
-                [
-                    {
-                        "node": "AI Agent1",
-                        "type": "ai_languageModel",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Aggregate": {
-            "main": [
-                [
-                    {
-                        "node": "AI Agent1",
                         "type": "main",
                         "index": 0
                     }
@@ -533,7 +197,7 @@
         "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
     },
     "pinData": {},
-    "versionId": "2c0a1a28-b585-4a9d-ac63-a25f131723ab",
+    "versionId": "37c2aceb-3cbc-4e8a-a4e8-2e023d400486",
     "triggerCount": 0,
     "tags": []
 }
