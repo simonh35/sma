@@ -2,39 +2,36 @@
 
 ## INSTALLATION
 
-### Cloning Git Repository
+### Git Repository Clonen
 ```bash
 git clone https://github.com/simonh35/sma.git
 cd sma
 ```
 
-## Running n8n using docker compose
+## n8n mit Docker Compose starten
 
-### For users running Ollama locally
+### - Nutzer, die Ollama lokal ausführen
 ```bash
 docker compose up
 ```
 
-Additionally, after you see "Editor is now accessible via: <http://localhost:5678/>":
 
-1. Head to <http://localhost:5678/home/credentials>
-2. Click on "Local Ollama service"
-3. Change the base URL to "http://host.docker.internal:11434/"
-
-### For Nvidia GPU users
+### - Nvidia GPU Nutzer
 ```bash
 docker compose --profile gpu-nvidia up
 ```
+Nachdem der Docker-Container gestartet ist:
+1. Credentials unter <http://localhost:5678/credentials> öffnen
+2. Auf "Local Ollama service" klicken
+3. Base URL auf "http://ollama:11434" ändern
+4. Auf "Save" klicken
+
 > [!NOTE]
-> If you have not used your Nvidia GPU with Docker before, please follow the
+> Bei erstmaliger Nutzung von Ollama über eine Nvidia GPU mit Docker, 
 > [Ollama Docker instructions](https://github.com/ollama/ollama/blob/main/docs/docker.md).
 
-### For AMD GPU users on linux
-```bash
-docker compose --profile gpu-amd up
-```
 
-### For everyone else (Running Ollama in a container using cpu only)
+### - Für alle anderen Nutzer (Ollama läuft nur über CPU)
 ```bash
 docker compose --profile cpu up
 ```
