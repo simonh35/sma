@@ -64,6 +64,7 @@ Editor unter <http://localhost:5678/home/workflows> öffnen
 ```bash
 docker compose down -v
 ```
+-> Docker compose nochmal ausführen
 ### Docker Container hängen sich auf
 Windows:
 ```bash
