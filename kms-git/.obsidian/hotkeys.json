@@ -1,0 +1,18 @@
+{
+  "post-webhook:post-webhook-selection-909b45a8-a5cd-4e0a-b0d5-824ea121f4dd": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "-"
+    }
+  ],
+  "post-webhook:post-webhook-note-2e75f628-6315-4749-98f8-bfd94e229b28": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "="
+    }
+  ]
+}

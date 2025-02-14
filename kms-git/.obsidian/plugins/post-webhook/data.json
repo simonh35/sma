@@ -1,0 +1,14 @@
+{
+  "webhooks": [
+    {
+      "id": "2e75f628-6315-4749-98f8-bfd94e229b28",
+      "name": "n8n Webhook",
+      "url": "http://localhost:5678/webhook/0e7479f4-ab54-432b-ba43-ddc783208710",
+      "excludeAttachments": false,
+      "includeVariableNote": false,
+      "enabled": true,
+      "processInlineFields": false,
+      "responseHandling": "append"
+    }
+  ]
+}
