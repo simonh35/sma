@@ -11,17 +11,18 @@ cd sma
 ## n8n mit Docker Compose starten
 
 ### Nutzer, die Ollama lokal ausführen
-Ollama herunterladen: <https://ollama.com/download>
+Ollama herunterladen und starten: <https://ollama.com/download>   
+Im Terminal gewünschte Modelle pullen:
 ```bash
 ollama pull llama3.2:latest
 ollama pull nomic-embed-text
 ```
 
-Zurück zum Terminal:
+Docker Compose ausführen:
 ```bash
 docker compose up -d
 ```
-Nachdem der Docker-Container gestartet ist:
+Nachdem die Docker-Container gestartet sind:
 1. Credentials unter <http://localhost:5678/credentials> öffnen
 2. Auf "Local Ollama service" klicken
 3. Base URL auf "http://host.docker.internal:11434" ändern
@@ -48,7 +49,7 @@ Editor unter <http://localhost:5678/home/workflows> öffnen
 - Zotero UserID in Node "Set Zotero-UserID" setzen
 - In der Node "Load Items in Zotero" unter "Header Auth" ein Credential mit dem Namen "Zotero-API-Key" und einem API Key von Zotero erstellen
 - Beim klicken von "Test Workflow" werden PDF-Dateien aus Zotero geladen und in der Qdrant Vektordatenbank gespeichert
-- Die erstellten Vektoren können unter <http://localhost:6333/dashboard#/collections>
+- Die erstellten Vektoren können unter <http://localhost:6333/dashboard#/collections> eingesehen werden
 
 ### 2. Obsidian
 - In der Node "Qdrant Vector Store" eine Collection auswählen oder erstellen
@@ -67,7 +68,7 @@ Editor unter <http://localhost:5678/home/workflows> öffnen
 ```bash
 docker compose down -v
 ```
--> Docker compose nochmal ausführen
+Dann Docker compose nochmal ausführen
 ### Docker Container hängen sich auf
 Windows:
 ```bash
@@ -78,6 +79,7 @@ Linux/Mac:
 docker kill $(docker ps -q)
 ```
 ### Ollama Modelle können in der Node nicht gewählt werden
+Modelle sind wahrscheinlich nicht gepullt:
 ```bash
 ollama pull *modellname*
 ```
